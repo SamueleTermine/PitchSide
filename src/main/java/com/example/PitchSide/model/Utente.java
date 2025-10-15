@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.grammars.hql.HqlParser;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,8 +40,14 @@ public class Utente {
 
     String immagine_profilo_percorso;
 
-    @OneToMany
-    private Set<Preferito> preferiti = new HashSet<Preferito>();
+    @OneToMany(mappedBy = "utente")
+    private List<Pronostico> pronostici;
+
+    @OneToMany(mappedBy = "utente")
+    private List<Preferito> preferiti;
+
+    @OneToOne(mappedBy = "utente")
+    private Punteggio punteggio;
 
     public Utente() {}
 
@@ -87,6 +94,18 @@ public class Utente {
 
     public String getImmagine_profilo_percorso() {
         return immagine_profilo_percorso;
+    }
+
+    public List<Pronostico> getPronostici() {
+        return pronostici;
+    }
+
+    public List<Preferito> getPreferiti() {
+        return preferiti;
+    }
+
+    public Punteggio getPunteggio() {
+        return punteggio;
     }
 
     @Override
