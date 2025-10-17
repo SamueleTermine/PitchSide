@@ -5,9 +5,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface PartitaDAO extends CrudRepository<Partita, Long> {
+
     @Query("SELECT p FROM Partita p WHERE p.id_partita = :idPartita")
     Optional<Partita> findByIdPartita(@Param("id_partita") Long idPartita);
+
+    @Query("SELECT p FROM Partita p WHERE p.data_partita BETWEEN :inizio AND :fine")
+    List<Partita> findByDataPartitaBetween(@Param("inizio") LocalDateTime inizio, @Param("fine") LocalDateTime fine);
 }
