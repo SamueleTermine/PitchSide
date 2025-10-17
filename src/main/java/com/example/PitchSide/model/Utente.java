@@ -49,6 +49,8 @@ public class Utente {
     @OneToOne(mappedBy = "utente")
     private Punteggio punteggio;
 
+    @OneToMany(mappedBy = "utente")
+    private List<Utente_Badge> badge_utente;
     public Utente() {}
 
     public Utente(String nickname, String nome_utente, String cognome_utente, String email, String password, String immagine_profilo_percorso) {

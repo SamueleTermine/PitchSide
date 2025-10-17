@@ -2,6 +2,8 @@ package com.example.PitchSide.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Badge {
     @Id
@@ -13,6 +15,9 @@ public class Badge {
     private Integer soglia_punti;
     private String icona;
 
+    @OneToMany (mappedBy = "badge")
+    private List<Utente_Badge> badge_utente;
+    
     public Badge(String nome_badge, String descrizione, Integer soglia_punti, String icona) {
         this.nome_badge = nome_badge;
         this.descrizione = descrizione;
