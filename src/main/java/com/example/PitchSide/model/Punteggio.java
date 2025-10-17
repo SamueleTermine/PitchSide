@@ -32,6 +32,18 @@ public class Punteggio {
         return punteggio_totale;
     }
 
+    public void setId_punteggio(Long id_punteggio) {
+        this.id_punteggio = id_punteggio;
+    }
+
+    public void setUtente(Utente utente) {
+        this.utente = utente;
+    }
+
+    public void setPunteggio_totale(Integer punteggio_totale) {
+        this.punteggio_totale = punteggio_totale;
+    }
+
     @Override
     public String toString() {
         return "Punteggio{" +

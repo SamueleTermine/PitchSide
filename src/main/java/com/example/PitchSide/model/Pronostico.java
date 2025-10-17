@@ -60,6 +60,34 @@ public class Pronostico {
         return partita;
     }
 
+    public void setUtente(Utente utente) {
+        this.utente = utente;
+    }
+
+    public void setId_pronostico(Long id_pronostico) {
+        this.id_pronostico = id_pronostico;
+    }
+
+    public void setScelta(String scelta) {
+        this.scelta = scelta;
+    }
+
+    public void setEsito(String esito) {
+        this.esito = esito;
+    }
+
+    public void setPunteggio_ottenuto(Integer punteggio_ottenuto) {
+        this.punteggio_ottenuto = punteggio_ottenuto;
+    }
+
+    public void setData_pronostico(LocalDateTime data_pronostico) {
+        this.data_pronostico = data_pronostico;
+    }
+
+    public void setPartita(Partita partita) {
+        this.partita = partita;
+    }
+
     @Override
     public String toString() {
         return "Pronostico{" +
