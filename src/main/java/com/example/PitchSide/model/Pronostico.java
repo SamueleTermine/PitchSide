@@ -23,14 +23,11 @@ public class Pronostico {
     @JoinColumn(name = "id_partita")
     private Partita partita;
 
-    public Pronostico(Long id_pronostico, String scelta, String esito, Integer punteggio_ottenuto, LocalDateTime data_pronostico, Utente utente, Partita partita) {
-        this.id_pronostico = id_pronostico;
+    public Pronostico(String scelta, String esito, Integer punteggio_ottenuto, LocalDateTime data_pronostico) {
         this.scelta = scelta;
         this.esito = esito;
         this.punteggio_ottenuto = punteggio_ottenuto;
         this.data_pronostico = data_pronostico;
-        this.utente = utente;
-        this.partita = partita;
     }
 
     public Pronostico() {}

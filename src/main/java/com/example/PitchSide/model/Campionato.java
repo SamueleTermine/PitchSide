@@ -17,12 +17,10 @@ public class Campionato {
     @OneToMany(mappedBy = "campionato")
     private List<Partita> partite;
 
-    public Campionato(Long id_campionato, String nome_campionato, String nazione, String logo, List<Partita> partite) {
-        this.id_campionato = id_campionato;
+    public Campionato(String nome_campionato, String nazione, String logo) {
         this.nome_campionato = nome_campionato;
         this.nazione = nazione;
         this.logo = logo;
-        this.partite = partite;
     }
     public Campionato() {}
 

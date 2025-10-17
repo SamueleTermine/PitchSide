@@ -13,8 +13,7 @@ public class Badge {
     private Integer soglia_punti;
     private String icona;
 
-    public Badge(Long id_badge, String nome_badge, String descrizione, Integer soglia_punti, String icona) {
-        this.id_badge = id_badge;
+    public Badge(String nome_badge, String descrizione, Integer soglia_punti, String icona) {
         this.nome_badge = nome_badge;
         this.descrizione = descrizione;
         this.soglia_punti = soglia_punti;

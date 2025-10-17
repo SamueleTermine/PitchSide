@@ -22,8 +22,7 @@ public class Preferito {
 
     private LocalDateTime data_aggiunta;
 
-    public Preferito(Long id_preferito, Utente utente, Partita partita, LocalDateTime data_aggiunta) {
-        this.id_preferito = id_preferito;
+    public Preferito(Utente utente, Partita partita, LocalDateTime data_aggiunta) {
         this.utente = utente;
         this.partita = partita;
         this.data_aggiunta = data_aggiunta;

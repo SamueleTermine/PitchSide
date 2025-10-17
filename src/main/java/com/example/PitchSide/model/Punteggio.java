@@ -15,7 +15,6 @@ public class Punteggio {
     private Integer punteggio_totale;
 
     public Punteggio(Long id_punteggio, Utente utente, Integer punteggio_totale) {
-        this.id_punteggio = id_punteggio;
         this.utente = utente;
         this.punteggio_totale = punteggio_totale;
     }
