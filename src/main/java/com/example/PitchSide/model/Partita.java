@@ -12,7 +12,7 @@ public class Partita {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id_partita;
+    private Long idPartita;
 
     private Integer giornata;
     private String squadra_casa;
@@ -22,6 +22,9 @@ public class Partita {
     private String stato;
     private LocalDateTime data_partita;
 
+    @Column(unique = true)
+    private int apiId;
+
     @ManyToOne
     @JoinColumn(name = "id_campionato")
     private Campionato campionato;
@@ -29,8 +32,8 @@ public class Partita {
     @OneToMany(mappedBy = "partita")
     private List<Pronostico> pronostici;
 
-    public Partita(Long id_partita, Integer giornata, String squadra_casa, String squadra_ospite, Integer goal_casa, Integer goal_ospite, String stato, LocalDateTime data_partita, Campionato campionato, List<Pronostico> pronostici) {
-        this.id_partita = id_partita;
+    public Partita(Long idPartita, Integer giornata, String squadra_casa, String squadra_ospite, Integer goal_casa, Integer goal_ospite, String stato, LocalDateTime data_partita, int apiId, Campionato campionato, List<Pronostico> pronostici) {
+        this.idPartita = idPartita;
         this.giornata = giornata;
         this.squadra_casa = squadra_casa;
         this.squadra_ospite = squadra_ospite;
@@ -38,15 +41,12 @@ public class Partita {
         this.goal_ospite = goal_ospite;
         this.stato = stato;
         this.data_partita = data_partita;
+        this.apiId = apiId;
         this.campionato = campionato;
         this.pronostici = pronostici;
     }
 
     public Partita() {}
-
-    public Long getId_partita() {
-        return id_partita;
-    }
 
     public Integer getGiornata() {
         return giornata;
@@ -82,5 +82,57 @@ public class Partita {
 
     public List<Pronostico> getPronostici() {
         return pronostici;
+    }
+
+    public void setGiornata(Integer giornata) {
+        this.giornata = giornata;
+    }
+
+    public void setSquadra_casa(String squadra_casa) {
+        this.squadra_casa = squadra_casa;
+    }
+
+    public void setSquadra_ospite(String squadra_ospite) {
+        this.squadra_ospite = squadra_ospite;
+    }
+
+    public void setGoal_casa(Integer goal_casa) {
+        this.goal_casa = goal_casa;
+    }
+
+    public void setGoal_ospite(Integer goal_ospite) {
+        this.goal_ospite = goal_ospite;
+    }
+
+    public void setStato(String stato) {
+        this.stato = stato;
+    }
+
+    public void setData_partita(LocalDateTime data_partita) {
+        this.data_partita = data_partita;
+    }
+
+    public void setCampionato(Campionato campionato) {
+        this.campionato = campionato;
+    }
+
+    public void setPronostici(List<Pronostico> pronostici) {
+        this.pronostici = pronostici;
+    }
+
+    public int getApiId() {
+        return apiId;
+    }
+
+    public void setApiId(int apiId) {
+        this.apiId = apiId;
+    }
+
+    public Long getIdPartita() {
+        return idPartita;
+    }
+
+    public void setIdPartita(Long idPartita) {
+        this.idPartita = idPartita;
     }
 }

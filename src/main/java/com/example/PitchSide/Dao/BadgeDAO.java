@@ -9,5 +9,8 @@ import java.util.List;
 public interface BadgeDAO extends CrudRepository<Badge, Long> {
     @Query("SELECT b FROM Badge b WHERE b.soglia_punti <= :punti")
     List<Badge> findAllBadgeSbloccati(int punti);
+
+    @Query("SELECT b FROM Badge b WHERE b.soglia_punti > :punti")
+    List<Badge> findAllBadgeNonSbloccati(int punti);
 }
 

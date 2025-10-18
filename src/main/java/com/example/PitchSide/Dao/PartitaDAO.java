@@ -11,9 +11,12 @@ import java.util.Optional;
 
 public interface PartitaDAO extends CrudRepository<Partita, Long> {
 
-    @Query("SELECT p FROM Partita p WHERE p.id_partita = :idPartita")
-    Optional<Partita> findByIdPartita(@Param("id_partita") Long idPartita);
+    @Query("SELECT p FROM Partita p WHERE p.idPartita = :id_parita")
+    Optional<Partita> findByIdPartita(@Param("id_partita") Long id_partita);
 
     @Query("SELECT p FROM Partita p WHERE p.data_partita BETWEEN :inizio AND :fine")
     List<Partita> findByDataPartitaBetween(@Param("inizio") LocalDateTime inizio, @Param("fine") LocalDateTime fine);
+
+    Optional<Partita> findByApiId(int apiId);
+
 }

@@ -17,11 +17,18 @@ public class Campionato {
     @OneToMany(mappedBy = "campionato")
     private List<Partita> partite;
 
-    public Campionato(String nome_campionato, String nazione, String logo) {
+    @Column(unique = true)
+    private int apiId;
+
+    public Campionato(Long id_campionato, String nome_campionato, String nazione, String logo, List<Partita> partite, int apiId) {
+        this.id_campionato = id_campionato;
         this.nome_campionato = nome_campionato;
         this.nazione = nazione;
         this.logo = logo;
+        this.partite = partite;
+        this.apiId = apiId;
     }
+
     public Campionato() {}
 
     public Long getId_campionato() {
@@ -42,6 +49,34 @@ public class Campionato {
 
     public List<Partita> getPartite() {
         return partite;
+    }
+
+    public void setId_campionato(Long id_campionato) {
+        this.id_campionato = id_campionato;
+    }
+
+    public void setNome_campionato(String nome_campionato) {
+        this.nome_campionato = nome_campionato;
+    }
+
+    public void setNazione(String nazione) {
+        this.nazione = nazione;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public void setPartite(List<Partita> partite) {
+        this.partite = partite;
+    }
+
+    public int getApiId() {
+        return apiId;
+    }
+
+    public void setApiId(int apiId) {
+        this.apiId = apiId;
     }
 
     @Override
