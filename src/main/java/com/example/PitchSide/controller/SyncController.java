@@ -47,39 +47,19 @@ public class SyncController {
             @RequestParam int season) {
         try {
             List<StandingGroupDTO> standingGroups = syncService.getStandings(leagueId, season);
-            if (standingGroups == null || standingGroups.isEmpty()
-                    || standingGroups.get(0).getStandings() == null
-                    || standingGroups.get(0).getStandings().isEmpty()) {
+
+            if (standingGroups == null || standingGroups.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
 
-            List<StandingDTO> mainStandingList = standingGroups.get(0).getStandings().get(0);
+            // Accedi correttamente alla lista: league → standings → primo gruppo
+            List<StandingDTO> mainStandingList =
+                    standingGroups.get(0).getLeague().getStandings().get(0);
+
             return ResponseEntity.ok(mainStandingList);
 
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Errore nel recupero classifiche: " + e.getMessage());
+            return ResponseEntity.status(500).body("Errore nel recupero della classifica: " + e.getMessage());
         }
     }
-
-    @GetMapping("/standings-debug")
-    public ResponseEntity<?> getStandingsDebug(
-            @RequestParam int leagueId,
-            @RequestParam int season) {
-        try {
-            List<StandingGroupDTO> standingGroups = syncService.getStandings(leagueId, season);
-            System.out.println("StandingGroups: " + standingGroups);
-            return ResponseEntity.ok(standingGroups);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Errore: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/test-standings")
-    public ResponseEntity<String> getRawStandings(
-            @RequestParam int leagueId,
-            @RequestParam int season) {
-        String rawResponse = syncService.testRawStandings(leagueId, season);
-        return ResponseEntity.ok(rawResponse);
-    }
-
 }

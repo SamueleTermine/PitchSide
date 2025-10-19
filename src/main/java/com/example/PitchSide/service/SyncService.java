@@ -26,6 +26,12 @@ public class SyncService {
     private ApiFootballService apiFootballService;
 
     @Autowired
+    private PronosticoService pronosticoService;
+
+    @Autowired
+    private SyncService syncService;
+
+    @Autowired
     private CampionatoDAO campionatoDAO;
 
     @Autowired
@@ -34,8 +40,6 @@ public class SyncService {
 
 //    private final List<Integer> supportedLeagueIds = List.of(135, 78, 61, 140, 39, 2);
 
-
-    // Sincronizza partite per singolo campionato e stagione
     public void syncFixtures(int leagueId, int season) {
         List<FixtureItemDTO> fixtures = apiFootballService.getFixturesByLeagueAndSeason(leagueId, season).block();
         if (fixtures == null || fixtures.isEmpty()) {
@@ -111,10 +115,6 @@ public class SyncService {
         return apiFootballService.getStandings(leagueId, season).block();
     }
 
-    public String testRawStandings(int leagueId, int season) {
-        return apiFootballService.getStandingsRaw(leagueId, season).block();
-    }
-
     public int getCurrentSeason() {
         LocalDate today = LocalDate.now();
         int year = today.getYear();
@@ -126,8 +126,9 @@ public class SyncService {
             return year;
         }
     }
+    /*-------------------------------------------METODI SCHEDULATI----------------------------------------------*/
 
-    @Scheduled(cron = "0 0 0/8 * * *") // ogni 6 ore a 00:00, 06:00, 12:00, 18:00
+    @Scheduled(cron = "0 0 0/8 * * *") // ogni 8 ore
     public void scheduledSyncFixtures() {
         int currentSeason = getCurrentSeason();
         syncAllSupportedFixtures(currentSeason);
@@ -136,5 +137,32 @@ public class SyncService {
     @Scheduled(cron = "0 0 0 * * *") // ogni giorno a mezzanotte
     public void scheduledSyncLeagues() {
         syncCampionati();
+    }
+
+    @Scheduled(cron = "0 0/30 * * * ?") // ogni 30 minuti
+    public void aggiornaPartiteFinite() {
+        List<Partita> partiteAttive = partitaDAO.findByStatoIn(List.of("in progress","HT", "NS"));
+
+        for (Partita partita : partiteAttive) {
+            FixtureItemDTO fixture = apiFootballService.getFixturesByLeagueAndSeason(partita.getCampionato().getApiId(), syncService.getCurrentSeason())
+                    .block()
+                    .stream()
+                    .filter(f -> f.getFixture().getId() == partita.getApiId())
+                    .findFirst()
+                    .orElse(null);
+
+            if (fixture != null) {
+                String nuovoStato = fixture.getFixture().getStatus().getShortStatus();
+
+                if ("FT".equalsIgnoreCase(nuovoStato) && !nuovoStato.equalsIgnoreCase(partita.getStato())) {
+                    partita.setGoal_casa(fixture.getGoals().getHome());
+                    partita.setGoal_ospite(fixture.getGoals().getAway());
+                    partita.setStato(nuovoStato);
+                    partitaDAO.save(partita);
+
+                    pronosticoService.verificaPronosticiEaggiornaPunteggi(partita.getIdPartita());
+                }
+            }
+        }
     }
 }

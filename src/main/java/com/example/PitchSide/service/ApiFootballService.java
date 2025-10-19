@@ -15,7 +15,7 @@ public class ApiFootballService {
     @Autowired
     private WebClient apiFootballWebClient;
 
-    // Leagues
+    // Campionati
     private final List<Integer> supportedLeagueIds = List.of(135, 78, 61, 140, 39, 2);
 
     public Mono<List<LeagueItemDTO>> getLeaguesFiltered() {
@@ -77,28 +77,5 @@ public class ApiFootballService {
                 .map(StandingsResponseDTO::getResponse);
     }
 
-    public Mono<String> getFixturesByLeagueAndSeasonRaw(int leagueId, int season) {
-        return apiFootballWebClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/fixtures")
-                        .queryParam("league", leagueId)
-                        .queryParam("season", season)
-                        .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .doOnNext(response -> System.out.println("Raw fixtures response for league " + leagueId + ": " + response));
-    }
-
-    public Mono<String> getStandingsRaw(int leagueId, int season) {
-        return apiFootballWebClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/standings")
-                        .queryParam("league", leagueId)
-                        .queryParam("season", season)
-                        .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .doOnNext(response -> System.out.println("Raw standings response for league " + leagueId + ": " + response));
-    }
 
 }

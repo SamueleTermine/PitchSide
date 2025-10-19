@@ -19,4 +19,6 @@ public interface PartitaDAO extends CrudRepository<Partita, Long> {
 
     Optional<Partita> findByApiId(int apiId);
 
+    List<Partita> findByStatoIn(List<String> stati);
+
 }
