@@ -1,5 +1,6 @@
 package com.example.PitchSide.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ public class Partita {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idPartita;
 
-    private Integer giornata;
+    private String giornata;
     private String squadra_casa;
     private String squadra_ospite;
     private Integer goal_casa;
@@ -26,13 +27,14 @@ public class Partita {
     private int apiId;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id_campionato")
     private Campionato campionato;
 
     @OneToMany(mappedBy = "partita")
     private List<Pronostico> pronostici;
 
-    public Partita(Long idPartita, Integer giornata, String squadra_casa, String squadra_ospite, Integer goal_casa, Integer goal_ospite, String stato, LocalDateTime data_partita, int apiId, Campionato campionato, List<Pronostico> pronostici) {
+    public Partita(Long idPartita, String giornata, String squadra_casa, String squadra_ospite, Integer goal_casa, Integer goal_ospite, String stato, LocalDateTime data_partita, int apiId, Campionato campionato, List<Pronostico> pronostici) {
         this.idPartita = idPartita;
         this.giornata = giornata;
         this.squadra_casa = squadra_casa;
@@ -48,7 +50,7 @@ public class Partita {
 
     public Partita() {}
 
-    public Integer getGiornata() {
+    public String getGiornata() {
         return giornata;
     }
 
@@ -84,7 +86,7 @@ public class Partita {
         return pronostici;
     }
 
-    public void setGiornata(Integer giornata) {
+    public void setGiornata(String giornata) {
         this.giornata = giornata;
     }
 

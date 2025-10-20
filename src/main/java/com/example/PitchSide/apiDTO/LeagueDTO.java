@@ -24,8 +24,19 @@ public class LeagueDTO {
     @JsonProperty("season")
     private int season;
 
+    @JsonProperty("round")
+    private String round;
+
     @JsonProperty("standings")
     private List<List<StandingDTO>> standings;
+
+    public String getRound() {
+        return round;
+    }
+
+    public void setRound(String round) {
+        this.round = round;
+    }
 
     public int getId() {
         return id;
@@ -92,7 +103,8 @@ public class LeagueDTO {
                 ", logo='" + logo + '\'' +
                 ", flag='" + flag + '\'' +
                 ", season=" + season +
-                ", standings=" + (standings != null ? standings.size() + " gruppi" : "null") +
+                ", round='" + round + '\'' +
+                ", standings=" + standings +
                 '}';
     }
 }

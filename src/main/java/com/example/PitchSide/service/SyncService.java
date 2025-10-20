@@ -44,6 +44,7 @@ public class SyncService {
             return;
         }
 
+
         for (FixtureItemDTO fixtureItem : fixtures) {
             int apiId = fixtureItem.getFixture().getId();
 
@@ -55,6 +56,17 @@ public class SyncService {
             String dateStr = fixtureItem.getFixture().getDate();
             LocalDateTime dateTime = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME);
             partita.setData_partita(dateTime);
+
+
+            String roundFull = fixtureItem.getLeague().getRound();
+            String giornata;
+
+            if (roundFull != null && roundFull.contains(" - ")) {
+                giornata = roundFull.split(" - ")[1].trim();
+            } else {
+                giornata = roundFull;
+            }
+            partita.setGiornata(giornata);
 
             partita.setStato(fixtureItem.getFixture().getStatus().getShortStatus());
             partita.setGoal_casa(fixtureItem.getGoals().getHome());

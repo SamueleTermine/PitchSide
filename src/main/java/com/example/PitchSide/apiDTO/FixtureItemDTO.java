@@ -7,13 +7,15 @@ public class FixtureItemDTO {
     private FixtureInfoDTO fixture;
 
     @JsonProperty("league")
-    private LeagueDTO league;
+    private LeagueLightDTO league;
 
     @JsonProperty("teams")
     private TeamsDTO teams;
 
     @JsonProperty("goals")
     private GoalsDTO goals;
+
+
 
     public FixtureInfoDTO getFixture() {
         return fixture;
@@ -23,11 +25,11 @@ public class FixtureItemDTO {
         this.fixture = fixture;
     }
 
-    public LeagueDTO getLeague() {
+    public LeagueLightDTO getLeague() {
         return league;
     }
 
-    public void setLeague(LeagueDTO league) {
+    public void setLeague(LeagueLightDTO league) {
         this.league = league;
     }
 

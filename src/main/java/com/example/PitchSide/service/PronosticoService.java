@@ -65,7 +65,7 @@ public class PronosticoService {
             punteggio.setPunteggio_totale(nuovoTotale);
             punteggioRepository.save(punteggio);
 
-            List<Badge> badgeSbloccabili = badgeRepository.findAllBadgeSbloccati(nuovoTotale);
+            List<Badge> badgeSbloccabili = badgeRepository.findBadgeSbloccati(nuovoTotale);
             for (Badge badge : badgeSbloccabili) {
                 if (!utenteBadgeRepository.existsByUtenteAndBadge(utente, badge)) {
                     Utente_Badge nuovoBadge = new Utente_Badge(utente, badge, LocalDateTime.now());

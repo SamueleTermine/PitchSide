@@ -18,6 +18,9 @@ public class PartitaController {
     @Autowired
     private PartitaDAO partitaRepository;
 
+    @Autowired
+    ApiFootballService apiFootballService;
+
     @GetMapping
     public ResponseEntity<List<Partita>> getAllPartite() {
         List<Partita> partite = (List<Partita>) partitaRepository.findAll();
@@ -40,11 +43,10 @@ public class PartitaController {
     }
 
     @GetMapping("/partite/campionato/{leagueId}/giornata/{giornata}")
-    public ResponseEntity<List<Partita>> getPartiteByCampionatoAndByMatchday(@PathVariable int leagueId,  @PathVariable int giornata ) {
+    public ResponseEntity<List<Partita>> getPartiteByCampionatoAndByMatchday(@PathVariable int leagueId,  @PathVariable String giornata ) {
         List<Partita> partite = partitaRepository.findPartitaByCampionatoAndGiornata(leagueId, giornata);
         return ResponseEntity.ok(partite);
     }
-
 
 
 }

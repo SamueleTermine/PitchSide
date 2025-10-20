@@ -23,13 +23,13 @@ public class BadgeController {
 
     @GetMapping("/sbloccabili/{punti}")
     public ResponseEntity<List<Badge>> getBadgeSbloccabili(@PathVariable int punti) {
-        List<Badge> badgeList = badgeRepository.findAllBadgeSbloccati(punti);
+        List<Badge> badgeList = badgeRepository.findBadgeSbloccati(punti);
         return ResponseEntity.ok(badgeList);
     }
 
     @GetMapping("/non-sbloccati/{punti}")
     public ResponseEntity<List<Badge>> getBadgeNonSbloccati(@PathVariable int punti) {
-        List<Badge> badgeList = badgeRepository.findAllBadgeNonSbloccati(punti);
+        List<Badge> badgeList = badgeRepository.findBadgeNonSbloccati(punti);
         return ResponseEntity.ok(badgeList);
     }
 }

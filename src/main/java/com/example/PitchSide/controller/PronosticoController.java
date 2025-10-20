@@ -74,7 +74,7 @@ public class PronosticoController {
             punteggio.setPunteggio_totale(puntiOrigine);
             punteggioRepository.save(punteggio);
 
-            List<Badge> badgeSbloccabili = badgeRepository.findAllBadgeSbloccati(puntiOrigine);
+            List<Badge> badgeSbloccabili = badgeRepository.findBadgeSbloccati(puntiOrigine);
             for (Badge badge : badgeSbloccabili) {
                 if (!utenteBadgeRepository.existsByUtenteAndBadge(utente, badge)) {
                     Utente_Badge nuovoBadge = new Utente_Badge(utente, badge, LocalDateTime.now());
