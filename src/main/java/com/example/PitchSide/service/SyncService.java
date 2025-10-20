@@ -29,9 +29,6 @@ public class SyncService {
     private PronosticoService pronosticoService;
 
     @Autowired
-    private SyncService syncService;
-
-    @Autowired
     private CampionatoDAO campionatoDAO;
 
     @Autowired
@@ -144,7 +141,7 @@ public class SyncService {
         List<Partita> partiteAttive = partitaDAO.findByStatoIn(List.of("in progress","HT", "NS"));
 
         for (Partita partita : partiteAttive) {
-            FixtureItemDTO fixture = apiFootballService.getFixturesByLeagueAndSeason(partita.getCampionato().getApiId(), syncService.getCurrentSeason())
+            FixtureItemDTO fixture = apiFootballService.getFixturesByLeagueAndSeason(partita.getCampionato().getApiId(), getCurrentSeason())
                     .block()
                     .stream()
                     .filter(f -> f.getFixture().getId() == partita.getApiId())
