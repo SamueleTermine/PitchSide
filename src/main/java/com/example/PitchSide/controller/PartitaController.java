@@ -2,7 +2,9 @@ package com.example.PitchSide.controller;
 
 import com.example.PitchSide.Dao.PartitaDAO;
 import com.example.PitchSide.model.Partita;
+import com.example.PitchSide.service.ApiFootballService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +24,7 @@ public class PartitaController {
         return ResponseEntity.ok(partite);
     }
 
-    @GetMapping("/{id_partita}")
+    @GetMapping("partita/{id_partita}")
     public ResponseEntity<Partita> getPartitaById(@PathVariable Long id_partita) {
         Optional<Partita> partitaOpt = partitaRepository.findById(id_partita);
         return partitaOpt.map(ResponseEntity::ok)
@@ -36,5 +38,13 @@ public class PartitaController {
         List<Partita> partite = partitaRepository.findByDataPartitaBetween(inizio, fine);
         return ResponseEntity.ok(partite);
     }
+
+    @GetMapping("/partite/campionato/{leagueId}/giornata/{giornata}")
+    public ResponseEntity<List<Partita>> getPartiteByCampionatoAndByMatchday(@PathVariable int leagueId,  @PathVariable int giornata ) {
+        List<Partita> partite = partitaRepository.findPartitaByCampionatoAndGiornata(leagueId, giornata);
+        return ResponseEntity.ok(partite);
+    }
+
+
 
 }

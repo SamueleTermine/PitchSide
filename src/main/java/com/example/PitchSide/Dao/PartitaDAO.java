@@ -21,4 +21,7 @@ public interface PartitaDAO extends CrudRepository<Partita, Long> {
 
     List<Partita> findByStatoIn(List<String> stati);
 
+    @Query("SELECT p FROM Partita p WHERE p.campionato.id_campionato = :leagueId AND p.giornata = :giornata")
+    List<Partita> findPartitaByCampionatoAndGiornata(@Param("leagueId") int leagueId, @Param("giornata") int giornata);
+
 }
