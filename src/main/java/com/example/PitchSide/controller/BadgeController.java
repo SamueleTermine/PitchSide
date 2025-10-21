@@ -24,8 +24,8 @@ public class BadgeController {
         badgeList.add(new Badge("Debut", "Hai fatto il tuo debutto nel mondo dei pronostici, continua a puntare!", 25, "/uploads/Debut.png"));
         badgeList.add(new Badge("Starter", "Primi passi decisi: i tuoi pronostici iniziano a fare la differenza.", 50, "/uploads/Starter.png"));
         badgeList.add(new Badge("Bronze", "Sei diventato un pronosticatore affidabile, il bronzo è tuo!", 100, "/uploads/Bronze.png"));
-        badgeList.add(new Badge("Silver", "I tuoi pronostici sono sempre più precisi, hai raggiunto il livello argento.", 150, "/uploads/Silver.png"));
-        badgeList.add(new Badge("Gold", "Pronostici d’oro: sei tra i migliori nel prevedere le partite.", 150, "/uploads/Gold.png"));
+        badgeList.add(new Badge("Silver", "I tuoi pronostici sono sempre più precisi, hai raggiunto il livello oro.", 150, "/uploads/Gold.png"));
+        badgeList.add(new Badge("Gold", "Pronostici diamantati: sei tra i migliori nel prevedere le partite.", 150, "/uploads/Diamond.png"));
         badgeList.add(new Badge("Prodigio", "Un vero prodigio dei pronostici, nessuno vede le partite come te.", 200, "/uploads/Prodigio.png"));
         badgeList.add(new Badge("Maestro", "Maestro delle previsioni calcistiche: il tuo intuito è imbattibile.", 275, "/uploads/Maestro.png"));
         badgeList.add(new Badge("Legend", "Sei una leggenda tra i pronosticatori, esempio per tutti gli appassionati.", 350, "/uploads/Legend.png"));
