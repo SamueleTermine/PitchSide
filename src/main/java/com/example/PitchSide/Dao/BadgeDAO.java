@@ -13,5 +13,7 @@ public interface BadgeDAO extends CrudRepository<Badge, Long> {
 
     @Query("SELECT b FROM Badge b WHERE b.soglia_punti > :punti")
     List<Badge> findBadgeNonSbloccati(@Param("punti") int punti);
+
+
 }
 
