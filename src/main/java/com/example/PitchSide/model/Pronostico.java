@@ -1,5 +1,7 @@
 package com.example.PitchSide.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -17,10 +19,12 @@ public class Pronostico {
 
     @ManyToOne
     @JoinColumn(name = "id_utente")
+    @JsonBackReference
     private Utente utente;
 
     @ManyToOne
     @JoinColumn(name = "id_partita")
+    @JsonBackReference
     private Partita partita;
 
     public Pronostico(String scelta, String esito, Integer punteggio_ottenuto, LocalDateTime data_pronostico) {

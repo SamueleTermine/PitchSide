@@ -1,5 +1,6 @@
 package com.example.PitchSide.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,6 +11,7 @@ public class Punteggio {
 
     @OneToOne
     @JoinColumn(name = "id_utente")
+    @JsonBackReference
     private Utente utente;
 
     private Integer punteggio_totale;

@@ -1,5 +1,6 @@
 package com.example.PitchSide.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class Badge {
     private String icona;
 
     @OneToMany (mappedBy = "badge")
+    @JsonManagedReference
     private List<Utente_Badge> badge_utente;
     
     public Badge(String nome_badge, String descrizione, Integer soglia_punti, String icona) {

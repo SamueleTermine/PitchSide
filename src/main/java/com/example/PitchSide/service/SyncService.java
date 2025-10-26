@@ -1,177 +1,200 @@
-package com.example.PitchSide.service;
+        package com.example.PitchSide.service;
 
-import com.example.PitchSide.Dao.CampionatoDAO;
-import com.example.PitchSide.Dao.PartitaDAO;
-import com.example.PitchSide.apiDTO.FixtureItemDTO;
-import com.example.PitchSide.apiDTO.LeagueDTO;
-import com.example.PitchSide.apiDTO.LeagueItemDTO;
-import com.example.PitchSide.apiDTO.StandingGroupDTO;
-import com.example.PitchSide.model.Campionato;
-import com.example.PitchSide.model.Partita;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+        import com.example.PitchSide.Dao.CampionatoDAO;
+        import com.example.PitchSide.Dao.PartitaDAO;
+        import com.example.PitchSide.Dao.PronosticoDAO;
+        import com.example.PitchSide.apiDTO.FixtureItemDTO;
+        import com.example.PitchSide.apiDTO.LeagueDTO;
+        import com.example.PitchSide.apiDTO.LeagueItemDTO;
+        import com.example.PitchSide.apiDTO.StandingGroupDTO;
+        import com.example.PitchSide.model.Campionato;
+        import com.example.PitchSide.model.Partita;
+        import com.example.PitchSide.model.Pronostico;
+        import com.example.PitchSide.model.Punteggio;
+        import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.scheduling.annotation.Scheduled;
+        import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
+        import java.time.LocalDate;
+        import java.time.LocalDateTime;
+        import java.time.Month;
+        import java.time.format.DateTimeFormatter;
+        import java.util.List;
+        import java.util.Optional;
 
-@Service
-public class SyncService {
+        @Service
+        public class SyncService {
 
-    @Autowired
-    private ApiFootballService apiFootballService;
+            @Autowired
+            private ApiFootballService apiFootballService;
 
-    @Autowired
-    private PronosticoService pronosticoService;
+            @Autowired
+            private PronosticoService pronosticoService;
 
-    @Autowired
-    private CampionatoDAO campionatoDAO;
+            @Autowired
+            private CampionatoDAO campionatoDAO;
 
-    @Autowired
-    private PartitaDAO partitaDAO;
+            @Autowired
+            private PronosticoDAO pronosticoRepository;
 
-
-//    private final List<Integer> supportedLeagueIds = List.of(135, 78, 61, 140, 39, 2);
-
-    public void syncFixtures(int leagueId, int season) {
-        List<FixtureItemDTO> fixtures = apiFootballService.getFixturesByLeagueAndSeason(leagueId, season).block();
-        if (fixtures == null || fixtures.isEmpty()) {
-            System.out.println("No fixtures found for league " + leagueId + " season " + season);
-            return;
-        }
+            @Autowired
+            private PartitaDAO partitaDAO;
 
 
-        for (FixtureItemDTO fixtureItem : fixtures) {
-            int apiId = fixtureItem.getFixture().getId();
+        //    private final List<Integer> supportedLeagueIds = List.of(135, 78, 61, 140, 39, 2);
 
-            Optional<Partita> existingOpt = partitaDAO.findByApiId(apiId);
-            Partita partita = existingOpt.orElse(new Partita());
-
-            partita.setApiId(apiId);
-
-            String dateStr = fixtureItem.getFixture().getDate();
-            LocalDateTime dateTime = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME);
-            partita.setData_partita(dateTime);
+            public void syncFixtures(int leagueId, int season) {
+                List<FixtureItemDTO> fixtures = apiFootballService.getFixturesByLeagueAndSeason(leagueId, season).block();
+                if (fixtures == null || fixtures.isEmpty()) {
+                    System.out.println("No fixtures found for league " + leagueId + " season " + season);
+                    return;
+                }
 
 
-            String roundFull = fixtureItem.getLeague().getRound();
-            String giornata;
+                for (FixtureItemDTO fixtureItem : fixtures) {
+                    int apiId = fixtureItem.getFixture().getId();
 
-            if (roundFull != null && roundFull.contains(" - ")) {
-                giornata = roundFull.split(" - ")[1].trim();
-            } else {
-                giornata = roundFull;
-            }
-            partita.setGiornata(giornata);
+                    Optional<Partita> existingOpt = partitaDAO.findByApiId(apiId);
+                    Partita partita = existingOpt.orElse(new Partita());
 
-            partita.setStato(fixtureItem.getFixture().getStatus().getShortStatus());
-            partita.setGoal_casa(fixtureItem.getGoals().getHome());
-            partita.setGoal_ospite(fixtureItem.getGoals().getAway());
+                    partita.setApiId(apiId);
 
-            partita.setSquadra_casa(fixtureItem.getTeams().getHome().getName());
-            partita.setSquadra_ospite(fixtureItem.getTeams().getAway().getName());
+                    String dateStr = fixtureItem.getFixture().getDate();
+                    LocalDateTime dateTime = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME);
+                    partita.setData_partita(dateTime);
 
-            Optional<Campionato> campionatoOpt = campionatoDAO.findByApiId(leagueId);
-            Campionato campionato;
-            if (campionatoOpt.isPresent()) {
-                campionato = campionatoOpt.get();
-            } else {
-                Campionato nuovoCampionato = new Campionato();
-                nuovoCampionato.setApiId(leagueId);
-                nuovoCampionato.setNome_campionato("Nome sconosciuto");
-                nuovoCampionato.setNazione("Nazione sconosciuta");
-                campionato = campionatoDAO.save(nuovoCampionato);
-            }
-            partita.setCampionato(campionato);
 
-            partitaDAO.save(partita);
-        }
-    }
+                    String roundFull = fixtureItem.getLeague().getRound();
+                    String giornata;
 
-    public void syncCampionati() {
-        List<LeagueItemDTO> leagues = apiFootballService.getLeaguesFiltered().block();
-        if (leagues == null) return;
+                    if (roundFull != null && roundFull.contains(" - ")) {
+                        giornata = roundFull.split(" - ")[1].trim();
+                    } else {
+                        giornata = roundFull;
+                    }
+                    partita.setGiornata(giornata);
 
-        for (LeagueItemDTO leagueItem : leagues) {
-            LeagueDTO league = leagueItem.getLeague();
-            Optional<Campionato> existing = campionatoDAO.findByApiId(league.getId());
-            Campionato campionato = existing.orElse(new Campionato());
+                    partita.setStato(fixtureItem.getFixture().getStatus().getShortStatus());
+                    partita.setGoal_casa(fixtureItem.getGoals().getHome());
+                    partita.setGoal_ospite(fixtureItem.getGoals().getAway());
 
-            campionato.setApiId(league.getId());
-            campionato.setNome_campionato(league.getName());
-            campionato.setNazione(league.getCountry());
-            campionato.setLogo(league.getLogo());
+                    partita.setSquadra_casa(fixtureItem.getTeams().getHome().getName());
+                    partita.setSquadra_ospite(fixtureItem.getTeams().getAway().getName());
 
-            campionatoDAO.save(campionato);
-        }
-    }
+                    Optional<Campionato> campionatoOpt = campionatoDAO.findByApiId(leagueId);
+                    Campionato campionato;
+                    if (campionatoOpt.isPresent()) {
+                        campionato = campionatoOpt.get();
+                    } else {
+                        Campionato nuovoCampionato = new Campionato();
+                        nuovoCampionato.setApiId(leagueId);
+                        nuovoCampionato.setNome_campionato("Nome sconosciuto");
+                        nuovoCampionato.setNazione("Nazione sconosciuta");
+                        campionato = campionatoDAO.save(nuovoCampionato);
+                    }
+                    partita.setCampionato(campionato);
 
-    public void syncAllSupportedFixtures(int season) {
-        List<LeagueItemDTO> supportedLeagues = apiFootballService.getLeaguesFiltered().block();
-        if (supportedLeagues == null) return;
-
-        for (LeagueItemDTO leagueItem : supportedLeagues) {
-            int leagueId = leagueItem.getLeague().getId();
-            syncFixtures(leagueId, season);
-        }
-    }
-
-    public List<StandingGroupDTO> getStandings(int leagueId, int season) {
-        return apiFootballService.getStandings(leagueId, season).block();
-    }
-
-    public int getCurrentSeason() {
-        LocalDate today = LocalDate.now();
-        int year = today.getYear();
-        Month month = today.getMonth();
-
-        if (month.getValue() < 7) {
-            return year - 1;
-        } else {
-            return year;
-        }
-    }
-    /*-------------------------------------------METODI SCHEDULATI----------------------------------------------*/
-
-    @Scheduled(cron = "0 0 0/8 * * *") // ogni 8 ore
-    public void scheduledSyncFixtures() {
-        int currentSeason = getCurrentSeason();
-        syncAllSupportedFixtures(currentSeason);
-    }
-
-    @Scheduled(cron = "0 0 0 * * *") // ogni giorno a mezzanotte
-    public void scheduledSyncLeagues() {
-        syncCampionati();
-    }
-
-    @Scheduled(cron = "0 0/30 * * * ?") // ogni 30 minuti
-    public void aggiornaPartiteFinite() {
-        List<Partita> partiteAttive = partitaDAO.findByStatoIn(List.of("in progress","HT", "NS"));
-
-        for (Partita partita : partiteAttive) {
-            FixtureItemDTO fixture = apiFootballService.getFixturesByLeagueAndSeason(partita.getCampionato().getApiId(), getCurrentSeason())
-                    .block()
-                    .stream()
-                    .filter(f -> f.getFixture().getId() == partita.getApiId())
-                    .findFirst()
-                    .orElse(null);
-
-            if (fixture != null) {
-                String nuovoStato = fixture.getFixture().getStatus().getShortStatus();
-
-                if ("FT".equalsIgnoreCase(nuovoStato) && !nuovoStato.equalsIgnoreCase(partita.getStato())) {
-                    partita.setGoal_casa(fixture.getGoals().getHome());
-                    partita.setGoal_ospite(fixture.getGoals().getAway());
-                    partita.setStato(nuovoStato);
                     partitaDAO.save(partita);
+                }
+            }
 
-                    pronosticoService.verificaPronosticiEaggiornaPunteggi(partita.getIdPartita());
+            public void syncCampionati() {
+                List<LeagueItemDTO> leagues = apiFootballService.getLeaguesFiltered().block();
+                if (leagues == null) return;
+
+                for (LeagueItemDTO leagueItem : leagues) {
+                    LeagueDTO league = leagueItem.getLeague();
+                    Optional<Campionato> existing = campionatoDAO.findByApiId(league.getId());
+                    Campionato campionato = existing.orElse(new Campionato());
+
+                    campionato.setApiId(league.getId());
+                    campionato.setNome_campionato(league.getName());
+                    campionato.setNazione(league.getCountry());
+                    campionato.setLogo(league.getLogo());
+
+                    campionatoDAO.save(campionato);
+                }
+            }
+
+            public void syncAllSupportedFixtures(int season) {
+                List<LeagueItemDTO> supportedLeagues = apiFootballService.getLeaguesFiltered().block();
+                if (supportedLeagues == null) return;
+
+                for (LeagueItemDTO leagueItem : supportedLeagues) {
+                    int leagueId = leagueItem.getLeague().getId();
+                    syncFixtures(leagueId, season);
+                }
+            }
+
+            public List<StandingGroupDTO> getStandings(int leagueId, int season) {
+                return apiFootballService.getStandings(leagueId, season).block();
+            }
+
+            public int getCurrentSeason() {
+                LocalDate today = LocalDate.now();
+                int year = today.getYear();
+                Month month = today.getMonth();
+
+                if (month.getValue() < 7) {
+                    return year - 1;
+                } else {
+                    return year;
+                }
+            }
+            /*-------------------------------------------METODI SCHEDULATI----------------------------------------------*/
+
+            @Scheduled(cron = "0 0 0/8 * * *") // ogni 8 ore
+            public void scheduledSyncFixtures() {
+                int currentSeason = getCurrentSeason();
+                syncAllSupportedFixtures(currentSeason);
+            }
+
+            @Scheduled(cron = "0 0 0 * * *") // ogni giorno a mezzanotte
+            public void scheduledSyncLeagues() {
+                syncCampionati();
+            }
+
+            @Scheduled(cron = "0 0/2 * * * ?") // ogni 30 minuti
+            public void aggiornaPartiteFinite() {
+                List<Partita> partiteAttive = partitaDAO.findByStatoIn(List.of("in progress", "HT", "NS"));
+
+                for (Partita partita : partiteAttive) {
+                    FixtureItemDTO fixture = apiFootballService.getFixturesByLeagueAndSeason(
+                                    partita.getCampionato().getApiId(), getCurrentSeason())
+                            .block()
+                            .stream()
+                            .filter(f -> f.getFixture().getId() == partita.getApiId())
+                            .findFirst()
+                            .orElse(null);
+
+                    if (fixture != null) {
+                        String nuovoStato = fixture.getFixture().getStatus().getShortStatus();
+
+                        if ("FT".equalsIgnoreCase(nuovoStato) && !nuovoStato.equalsIgnoreCase(partita.getStato())) {
+                            partita.setGoal_casa(fixture.getGoals().getHome());
+                            partita.setGoal_ospite(fixture.getGoals().getAway());
+                            partita.setStato(nuovoStato);
+                            partitaDAO.save(partita);
+
+                            String esitoReale = pronosticoService.calcolaEsito(partita);
+
+                            List<Pronostico> pronostici = pronosticoRepository.findByPartita(partita);
+                            for (Pronostico p : pronostici) {
+                                if (p.getEsito() == null) { // evita ricalcoli
+                                    boolean corretto = esitoReale.equals(p.getScelta());
+                                    int delta = corretto ? PronosticoService.PUNTI_CORRETTO : PronosticoService.PUNTI_SCONTO;
+
+                                    p.setEsito(esitoReale);
+                                    p.setPunteggio_ottenuto(delta);
+                                    pronosticoRepository.save(p);
+
+                                    Punteggio punteggio = pronosticoService.aggiornaPunteggioUtente(p.getUtente(), delta);
+
+                                    pronosticoService.aggiornaBadgeUtente(p.getUtente(), punteggio.getPunteggio_totale());
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-}

@@ -1,5 +1,6 @@
 package com.example.PitchSide.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -41,16 +42,22 @@ public class Utente {
     String immagine_profilo_percorso;
 
     @OneToMany(mappedBy = "utente")
+    @JsonManagedReference
     private List<Pronostico> pronostici;
 
     @OneToMany(mappedBy = "utente")
+    @JsonManagedReference
     private List<Preferito> preferiti;
 
     @OneToOne(mappedBy = "utente")
+    @JsonManagedReference
     private Punteggio punteggio;
 
     @OneToMany(mappedBy = "utente")
+    @JsonManagedReference
     private List<Utente_Badge> badge_utente;
+
+
     public Utente() {}
 
     public Utente(String nickname, String nome_utente, String cognome_utente, String email, String password, String immagine_profilo_percorso) {

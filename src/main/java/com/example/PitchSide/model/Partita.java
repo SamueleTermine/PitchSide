@@ -1,6 +1,8 @@
 package com.example.PitchSide.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -29,9 +31,11 @@ public class Partita {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "id_campionato")
+    @JsonBackReference
     private Campionato campionato;
 
     @OneToMany(mappedBy = "partita")
+    @JsonManagedReference
     private List<Pronostico> pronostici;
 
     public Partita(Long idPartita, String giornata, String squadra_casa, String squadra_ospite, Integer goal_casa, Integer goal_ospite, String stato, LocalDateTime data_partita, int apiId, Campionato campionato, List<Pronostico> pronostici) {

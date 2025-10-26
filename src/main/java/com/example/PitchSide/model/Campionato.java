@@ -1,5 +1,6 @@
 package com.example.PitchSide.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class Campionato {
     private String logo;
 
     @OneToMany(mappedBy = "campionato")
+    @JsonManagedReference
     private List<Partita> partite;
 
     @Column(unique = true)
