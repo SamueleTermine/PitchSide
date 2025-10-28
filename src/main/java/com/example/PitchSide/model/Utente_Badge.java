@@ -1,6 +1,7 @@
 package com.example.PitchSide.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -14,12 +15,11 @@ public class Utente_Badge {
 
     @ManyToOne
     @JoinColumn(name = "id_utente")
-    @JsonBackReference
+    @JsonIgnore
     private Utente utente;
 
     @ManyToOne
     @JoinColumn(name = "id_badge")
-    @JsonBackReference
     private Badge badge;
 
     private LocalDateTime data_sblocco;
