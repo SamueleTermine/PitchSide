@@ -162,21 +162,21 @@
                 long startTime = System.currentTimeMillis();
                 System.out.println("🚀 [aggiornaPartiteFinite] Avvio controllo partite finite: " + LocalDateTime.now());
 
-                // 1️⃣ Recupera le partite ancora attive
+
                 List<Partita> partiteAttive = partitaDAO.findByStatoIn(List.of("in progress", "HT", "NS"));
                 if (partiteAttive.isEmpty()) {
                     System.out.println("ℹ️ Nessuna partita attiva trovata. Fine esecuzione.");
                     return;
                 }
 
-                // 2️⃣ Raggruppa per campionato per ridurre le chiamate API
+
                 Map<Integer, List<Partita>> partitePerCampionato = partiteAttive.stream()
                         .collect(Collectors.groupingBy(p -> p.getCampionato().getApiId()));
 
                 int campionatiElaborati = 0;
                 int partiteAggiornate = 0;
 
-                // 3️⃣ Cicla per ogni campionato
+
                 for (Map.Entry<Integer, List<Partita>> entry : partitePerCampionato.entrySet()) {
                     Integer campionatoId = entry.getKey();
                     List<Partita> partiteDelCampionato = entry.getValue();
@@ -184,7 +184,7 @@
                     try {
                         System.out.printf("⚙️ Elaborazione campionato ID %d (%d partite)...%n", campionatoId, partiteDelCampionato.size());
 
-                        // 4️⃣ Chiamata API per campionato
+
                         List<FixtureItemDTO> fixtures = apiFootballService
                                 .getFixturesByLeagueAndSeason(campionatoId, getCurrentSeason())
                                 .block();
@@ -194,7 +194,7 @@
                             continue;
                         }
 
-                        // 5️⃣ Confronta le partite locali con quelle dell’API
+
                         for (Partita partita : partiteDelCampionato) {
                             FixtureItemDTO fixture = fixtures.stream()
                                     .filter(f -> f.getFixture().getId() == partita.getApiId())
@@ -205,7 +205,6 @@
 
                             String nuovoStato = fixture.getFixture().getStatus().getShortStatus();
 
-                            // 6️⃣ Se la partita è appena finita (FT)
                             if ("FT".equalsIgnoreCase(nuovoStato) && !nuovoStato.equalsIgnoreCase(partita.getStato())) {
                                 partita.setGoal_casa(fixture.getGoals().getHome());
                                 partita.setGoal_ospite(fixture.getGoals().getAway());
@@ -215,10 +214,10 @@
                                 System.out.printf("✅ Partita %d aggiornata (FT: %d-%d)%n",
                                         partita.getIdPartita(), partita.getGoal_casa(), partita.getGoal_ospite());
 
-                                // 7️⃣ Calcolo esito reale
+
                                 String esitoReale = pronosticoService.calcolaEsito(partita);
 
-                                // 8️⃣ Aggiorna i pronostici relativi
+
                                 List<Pronostico> pronostici = pronosticoRepository.findByPartita(partita);
                                 for (Pronostico p : pronostici) {
                                     if (p.getEsito() == null) { // evita ricalcoli
@@ -243,7 +242,7 @@
 
                         campionatiElaborati++;
 
-                        // 9️⃣ Pausa per evitare il rate limit
+
                         Thread.sleep(2000);
 
                     } catch (WebClientResponseException.TooManyRequests e) {
